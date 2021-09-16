@@ -179,6 +179,12 @@ function fetchdata() {
             divnewimage.style.backgroundImage = "url(" + src + ")";
             imgContainer.appendChild(divnewimage);
           });
+          divnewimage.addEventListener("mouseover", function (e) {
+            e.target.classList.add("zoomImg");
+          });
+          divnewimage.addEventListener("mouseout", function (e) {
+            e.target.classList.remove("zoomImg");
+          });
 
           childDiv.appendChild(img);
           imgContainer.appendChild(childDiv);
