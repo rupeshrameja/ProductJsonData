@@ -7,21 +7,91 @@
     <title>Rupesh</title>
 
     <style>
-      .new {
+      .dispalyed {
         width: 500px;
         height: 500px;
-        background-color: aqua;
-        border-style: dotted;
+        margin: 5px;
       }
+      .buttons {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        margin: 5px;
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background: rgb(95, 209, 139);
+        background-size: cover;
+        position: relative;
+        width: 50px;
+        height: 65px;
+        background-color: #662d91;
+      }
+      .image {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        margin: 5px;
+        background-repeat: no-repeat;
+        background-size: 100%;
+
+        background: rgb(95, 209, 139);
+      }
+      .varinatDiv img {
+        width: 200px;
+        height: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      .varinatDiv .new {
+        background-color: aqua;
+        border: 1px solid red;
+
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+      .varinat {
+        width: 40%;
+        height: 98%;
+        float: left;
+
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-size: 100%;
+        margin: auto;
+
+        max-width: 100%;
+        -webkit-transition: all 1s ease;
+      }
+      .zoomImg {
+        transition: all 1s ease;
+        -webkit-transform: scale(1.25);
+
+        transform: scale(1.25);
+      }
+
       .hidden {
         display: none;
       }
     </style>
   </head>
   <body id="body">
+    <select id="type">
+      <option value="" selevcted>SelectType</option>
+    </select>
     <input type="button" id="fetchdatas" value="fetch" />
-    <select id="selects" margin="right"></select>
+
+    <select id="selects"></select>
+    <div id="buttondiv"></div>
     <div id="image"></div>
+
+    <div id="images"></div>
 
     <script src="image_with_div.js"></script>
   </body>

@@ -8,7 +8,9 @@ fetch.addEventListener("click", function () {
 });
 
 function fetchdata() {
-  const url = `https://sohail-test-store.myshopify.com/products/apple-iphone-11-pro.json`;
+  // const url = `https://demo.starapps.studio/products/printed-maxi-dress.json`;
+  const url = `https://line-item.myshopify.com/products/shoes.json`;
+  // const url = `https://sohail-test-store.myshopify.com/products/apple-iphone-11-pro.json`;
 
   var x = new XMLHttpRequest();
   x.onreadystatechange = function () {
@@ -17,9 +19,11 @@ function fetchdata() {
       let imagejdata = JSON.parse(imageJsonData);
       let newresult = imagejdata.product.images;
       let images = newresult;
-      varaint_images(images);
+      let optionJson = imagejdata.product.options;
+
+      varaint_images(images, optionJson);
     }
-    function varaint_images(image) {
+    function varaint_images(image, optionJson) {
       let varaintids = [];
 
       var obj = [];
@@ -32,17 +36,17 @@ function fetchdata() {
       let flag = true;
       var variantDivs;
       var imgContainer = document.querySelector("#image");
-      var Container = document.querySelector("#images");
+      var Container;
+      var type;
+      var buttondiv = document.querySelector("#buttondiv");
 
       image.forEach((img) => {
         src = img["src"];
         all_images.push(src);
-        // console.log(src);
-        // src = src.replace("https:", "")
+
         src = src.split("?")[0];
         if (img["variant_ids"].length == 0 && flag) {
           obj.push(img["src"]);
-          // console.log(obj);
         }
         if (img["variant_ids"].length > 0) {
           vids = img["variant_ids"];
@@ -69,8 +73,6 @@ function fetchdata() {
         variantData[id].push(...obj);
       });
 
-      let newVariantsIds = [];
-      // console.log(variantData);
       Object.keys(variantData).forEach(function (varaintid) {
         var el = document.createElement("option");
         el.textContent = varaintid;
@@ -82,12 +84,9 @@ function fetchdata() {
       });
 
       sel.addEventListener("change", function (e) {
-        console.log(variantData);
-
         val = e.target.value;
         indexArr = [];
         selectedvarient = variantData[val];
-        console.log(selectedvarient);
 
         let varaint = [];
 
@@ -101,61 +100,87 @@ function fetchdata() {
 
         neededDiv.classList.remove("hidden"); //next display
         let imgtarget = neededDiv.querySelector("img");
-        imgtarget.dispatchEvent(new Event("mouseover"));
+        imgtarget.dispatchEvent(new Event("click"));
       });
 
-      // varaintids = varaintids.filter((elem, index) => {
+      let setType;
+      let newVariantsIds;
+      var selectedType = document.querySelector("#type");
+      optionJson.forEach((optionjs, index) => {
+        if (index === 1) {
+          types = optionjs["values"];
+        }
+      });
+      for (i = 0; i < types.length; i++) {
+        var el = document.createElement("option");
+        el.textContent = types[i];
+        el.value = types[i];
 
-      // })
+        selectedType.appendChild(el);
+      }
 
-      varaintids.forEach(function (DivId, index) {
-        variantDivs = document.createElement("div");
-        variantDivs.id = DivId;
-        variantDivs.classList.add("buttons");
-        let image = variantData[Object.keys(variantData)[index]];
-        variantDivs.style.backgroundImage = "url(" + image[0] + ")";
-        variantDivs.setAttribute("thisimage", image[0]);
-        if (!!!document.querySelector("div[thisimage='" + image[0] + "']")) {
-          imgContainer.appendChild(variantDivs);
+      selectedType.addEventListener("change", function (e) {
+        document.querySelectorAll(".buttons").forEach((e) => e.remove());
+        setType = e.target.value;
+        newVariantsIds = varaintids;
+        if (setType == types[0]) {
+          newVariantsIds = newVariantsIds.slice(0, 3);
+        } else {
+          newVariantsIds = newVariantsIds.slice(-3);
         }
 
-        variantDivs.addEventListener("click", function (e) {
-          let current = e.target.id;
+        newVariantsIds.forEach(function (DivId, index) {
+          variantDivs = document.createElement("div");
+          variantDivs.id = DivId;
 
-          let index;
-          var alloptions = document.querySelectorAll("#selects option");
+          variantDivs.classList.add("buttons");
+          let image = variantData[Object.keys(variantData)[index]];
+          variantDivs.style.backgroundImage = "url(" + image[1] + ")";
+          variantDivs.setAttribute("thisimage", image[1]);
+          if (!!!document.querySelector("div[thisimage='" + image[1] + "']")) {
+            buttondiv.appendChild(variantDivs);
+          }
 
-          alloptions.forEach((option, i) => {
-            if (current == alloptions[i].value) {
-              index = alloptions[i].index;
-            }
+          variantDivs.addEventListener("click", function (e) {
+            let current = e.target.id;
+
+            let index;
+            var alloptions = document.querySelectorAll("#selects option");
+
+            alloptions.forEach((option, i) => {
+              if (current == alloptions[i].value) {
+                index = alloptions[i].index;
+              }
+            });
+
+            sel.selectedIndex = index;
+
+            sel.dispatchEvent(new Event("change"));
           });
 
-          sel.selectedIndex = index;
-
-          sel.dispatchEvent(new Event("change"));
+          variantDivs.dispatchEvent(new Event("click"));
         });
       });
-      // }
+      selectedType.selectedIndex = 1;
+      selectedType.dispatchEvent(new Event("change"));
+
       let showdiv;
       let divid = document.getElementById("image");
       let childDiv;
       let selected = document.querySelector(".new src");
 
-      // console.log(selected);
       divnewimage = document.createElement("div");
       divnewimage.classList.add("varinat");
 
-      Container.appendChild(divnewimage);
-
-      // console.log(variantData);
-      // console.log(Object.keys(variantData));
-      // console.log(Object.values(variantData));
       Object.keys(variantData).forEach(function (vid, index) {
         childDiv = document.createElement("div");
         childDiv.classList.add("varinatDiv");
 
-        // console.log(vid);
+        divnewimage.addEventListener("mouseover", function (e) {
+          var selected_img = document.querySelector(".zoomImg");
+
+          e.target.classList.add("zoomImg");
+        });
 
         childDiv.id = `v_${vid}`;
 
@@ -166,9 +191,7 @@ function fetchdata() {
 
           img.src = src;
 
-          // img.style = "width: 300px; height:300px;";
-
-          img.addEventListener("mouseover", function (e) {
+          img.addEventListener("click", function (e) {
             var selected_img = document.querySelector(".new");
 
             if (selected_img) {
@@ -176,6 +199,7 @@ function fetchdata() {
             }
 
             e.target.classList.add("new");
+
             divnewimage.style.backgroundImage = "url(" + src + ")";
             imgContainer.appendChild(divnewimage);
           });
@@ -185,23 +209,12 @@ function fetchdata() {
           divnewimage.addEventListener("mouseout", function (e) {
             e.target.classList.remove("zoomImg");
           });
-
           childDiv.appendChild(img);
           imgContainer.appendChild(childDiv);
         });
       });
 
-      // let a = "a";
-      // let b = "b";
-      // let c = "c";
-      // console.log("Hello 'world'  " + a + "Hello " + b);
-      // console.log(`hello "world" 'world' ${a} ${b} ${c}`);
-
-      // document.querySelectorAll(`div[id='${31566491123760}']`);
-
       var targetdiv = document.querySelectorAll(".buttons");
-
-      targetdiv[0].dispatchEvent(new Event("click"));
     }
   };
 
